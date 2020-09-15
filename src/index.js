@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import {BrowserRouter, Switch, Rote, Route} from "react-router-dom";
+import {BrowserRouter, Switch, Route} from "react-router-dom";
 // components
 import StorePicker from "./components/StorePicker";
 import NotFound from "./components/NotFound";
