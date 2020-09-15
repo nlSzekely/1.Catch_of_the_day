@@ -2,12 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import {BrowserRouter, Switch, Rote, Route} from "react-router-dom";
+// components
+import StorePicker from "./components/StorePicker";
+import NotFound from "./components/NotFound";
 // css
 import "./css/style.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/" component={StorePicker}/>
+        <Route exact path="/store/:storeId" component={App} />
+        <Route component={NotFound}/>
+      </Switch>
+    </BrowserRouter>
+    
   </React.StrictMode>,
   document.getElementById('root')
 );
