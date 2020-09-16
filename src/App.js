@@ -9,10 +9,10 @@ import sampleFishes from "./sample-fishes"
 
 function App() {
   const [fishes, setFishes] = useState({});
-  const [order, setOrder] = useState({});
+  const [orders, setOrders] = useState({});
   useEffect(()=>{
-    console.log(fishes)
-  },[fishes])
+    console.log(orders)
+  },[fishes,orders])
 
   function loadSampleFishes() {
     setFishes(sampleFishes);
@@ -24,6 +24,11 @@ function App() {
     console.log(fishesCopy)
     setFishes(fishesCopy);
   }
+  function addToOrder(id){
+    const ordersCopy = {...orders};
+    ordersCopy[id] = ordersCopy[id]+1 || 1;
+    setOrders(ordersCopy);
+  }
 
   return (
     <div className="catch-of-the-day" >
@@ -32,7 +37,7 @@ function App() {
         {/* list of fishes-------- */}
         <ul className="list-of-fishes">
           {Object.keys(fishes).map((key) => {
-            return <Fish key={key} fishObj={fishes[key]} />
+            return <Fish key={key} addToOrder={addToOrder} fishId={key} fishObj={fishes[key]} />
           })}
         </ul>
       </div>
