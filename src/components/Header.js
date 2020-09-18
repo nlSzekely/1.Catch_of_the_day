@@ -1,7 +1,6 @@
 import React from 'react'
 
 export default function Header(props) {
-    console.log(this)
     return (
         <header className="top">
             <h1>

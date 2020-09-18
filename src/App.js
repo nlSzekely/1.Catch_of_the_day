@@ -11,7 +11,6 @@ function App() {
   const [fishes, setFishes] = useState({});
   const [orders, setOrders] = useState({});
   useEffect(()=>{
-    console.log(orders)
   },[fishes,orders])
 
   function loadSampleFishes() {
@@ -21,7 +20,6 @@ function App() {
   function addFish(fish) {
     const fishesCopy = { ...fishes };
     fishesCopy[`fish-${Date.now()}`] = fish;
-    console.log(fishesCopy)
     setFishes(fishesCopy);
   }
   function addToOrder(id){
@@ -43,7 +41,7 @@ function App() {
       </div>
 
       {/* order----------------- */}
-      <Order />
+      <Order fishes={fishes} orders={orders} />
       {/* inventory------------- */}
       <Inventory loadSampleFishes={loadSampleFishes} addFish={addFish} />
     </div>
