@@ -6,12 +6,24 @@ import Inventory from "./components/Inventory";
 import Fish from "./components/Fish";
 import sampleFishes from "./sample-fishes"
 
+// ----------------Firebase Import----------------------
+import firebase from 'firebase/app';
+import 'firebase/database';
+
+
 
 function App() {
+  const [database,setDatabase] = useState();
   const [fishes, setFishes] = useState({});
   const [orders, setOrders] = useState({});
+  // component will mount setting the database 
   useEffect(()=>{
-  },[fishes,orders])
+    getDatabase()
+  },[])
+
+  useEffect(()=>{
+    console.log(database)
+  },[database])
 
   function loadSampleFishes() {
     setFishes(sampleFishes);
@@ -26,6 +38,25 @@ function App() {
     const ordersCopy = {...orders};
     ordersCopy[id] = ordersCopy[id]+1 || 1;
     setOrders(ordersCopy);
+  }
+  // getting the database from firebase-----------------------------------
+  function getDatabase(){
+    var firebaseConfig = {
+      apiKey: "AIzaSyC85OTJiMIfODh3EJD8-UGvbn766oit-Ek",
+      authDomain: "nlszekely-projects.firebaseapp.com",
+      databaseURL: "https://nlszekely-projects.firebaseio.com",
+      projectId: "nlszekely-projects",
+      storageBucket: "nlszekely-projects.appspot.com",
+      messagingSenderId: "951390431995",
+      appId: "1:951390431995:web:563d083057e8aee4ecde5e",
+      measurementId: "G-EQ7YY8PJPR"
+    };
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const database = firebase.database().ref('/catch_of_the_day');
+    setDatabase(database);
   }
 
   return (
