@@ -12,18 +12,44 @@ import 'firebase/database';
 
 
 
-function App() {
+function App(props) {
+  
   const [database,setDatabase] = useState();
   const [fishes, setFishes] = useState({});
-  const [orders, setOrders] = useState({});
+  const [orders, setOrders] = useState(getOrder());
   // component will mount setting the database 
   useEffect(()=>{
-    getDatabase()
-  },[])
-
+    // getting the database from firebase function-----------------------------------
+    function getDatabase(){
+      var firebaseConfig = {
+        apiKey: "AIzaSyC85OTJiMIfODh3EJD8-UGvbn766oit-Ek",
+        authDomain: "nlszekely-projects.firebaseapp.com",
+        databaseURL: "https://nlszekely-projects.firebaseio.com",
+        projectId: "nlszekely-projects",
+        storageBucket: "nlszekely-projects.appspot.com",
+        messagingSenderId: "951390431995",
+        appId: "1:951390431995:web:563d083057e8aee4ecde5e",
+        measurementId: "G-EQ7YY8PJPR"
+    };
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const database = firebase.database().ref('/catch_of_the_day');
+    setDatabase(database);
+  };
+    // calling the function
+    getDatabase();
+  },[]);
+  // saving the order when order is changed
   useEffect(()=>{
-    console.log(database)
-  },[database])
+      // save order function-------------------------------------------
+    const storeId = props.match.params.storeId;
+    function saveOrders(storeId){
+      localStorage.setItem(storeId,JSON.stringify(orders))
+    }
+    saveOrders(storeId)
+  },[orders,props.match.params.storeId]);
 
   function loadSampleFishes() {
     setFishes(sampleFishes);
@@ -39,25 +65,15 @@ function App() {
     ordersCopy[id] = ordersCopy[id]+1 || 1;
     setOrders(ordersCopy);
   }
-  // getting the database from firebase-----------------------------------
-  function getDatabase(){
-    var firebaseConfig = {
-      apiKey: "AIzaSyC85OTJiMIfODh3EJD8-UGvbn766oit-Ek",
-      authDomain: "nlszekely-projects.firebaseapp.com",
-      databaseURL: "https://nlszekely-projects.firebaseio.com",
-      projectId: "nlszekely-projects",
-      storageBucket: "nlszekely-projects.appspot.com",
-      messagingSenderId: "951390431995",
-      appId: "1:951390431995:web:563d083057e8aee4ecde5e",
-      measurementId: "G-EQ7YY8PJPR"
-    };
-    // Initialize Firebase
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const database = firebase.database().ref('/catch_of_the_day');
-    setDatabase(database);
+  
+  // getting the order from local storage-----------------------------------
+  function getOrder(){
+    const storeId = props.match.params.storeId;
+    const order = JSON.parse(localStorage.getItem(storeId)) || {};
+    return order; 
   }
+
+
 
   return (
     <div className="catch-of-the-day" >
