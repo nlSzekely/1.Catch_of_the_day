@@ -24,7 +24,7 @@ export default function FishForm(props) {
     }
     return (
         <form ref={fishForm} onSubmit={handleSubmit} className="fish-edit">
-            <input ref={fishName} type="text" placeholder="Fish Name"/>
+            <input ref={fishName} defaultValue={props.fish?props.fish.name:""} type="text" placeholder="Fish Name"/>
             <input ref={fishPrice} type="text" placeholder="Fish Price"/>
             <select ref={fishStatus}>
                 <option value="1">Fresh!</option>

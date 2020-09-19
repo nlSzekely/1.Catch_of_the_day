@@ -13,13 +13,12 @@ import 'firebase/database';
 
 
 function App(props) {
-  
+  const storeId = props.match.params.storeId;
   const [database,setDatabase] = useState();
   const [fishes, setFishes] = useState({});
   const [orders, setOrders] = useState(getOrder());
-  // component will mount setting the database 
+// getting the database from firebase -----------------------------------------------
   useEffect(()=>{
-    // getting the database from firebase function-----------------------------------
     function getDatabase(){
       var firebaseConfig = {
         apiKey: "AIzaSyC85OTJiMIfODh3EJD8-UGvbn766oit-Ek",
@@ -35,21 +34,28 @@ function App(props) {
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
-    const database = firebase.database().ref('/catch_of_the_day');
+    const database = firebase.database().ref(`/catch-of-the-day/${storeId}`);
     setDatabase(database);
-  };
-    // calling the function
+    };
     getDatabase();
-  },[]);
+  },[storeId]);
+// loading the fishes from the database---------------------------------------------------
+useEffect(()=>{
+  if(!database){return};
+  database.on("value",(item)=>{
+    setFishes(item.val()||{});
+  })
+},[database])
+
+
+
   // saving the order when order is changed
   useEffect(()=>{
-      // save order function-------------------------------------------
-    const storeId = props.match.params.storeId;
     function saveOrders(storeId){
       localStorage.setItem(storeId,JSON.stringify(orders))
     }
     saveOrders(storeId)
-  },[orders,props.match.params.storeId]);
+  },[orders,storeId]);
 
   function loadSampleFishes() {
     setFishes(sampleFishes);
@@ -90,7 +96,7 @@ function App(props) {
       {/* order----------------- */}
       <Order fishes={fishes} orders={orders} />
       {/* inventory------------- */}
-      <Inventory loadSampleFishes={loadSampleFishes} addFish={addFish} />
+      <Inventory fishes={fishes} loadSampleFishes={loadSampleFishes} addFish={addFish} />
     </div>
   );
 }
