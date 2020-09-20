@@ -4,7 +4,7 @@ import Header from "./components/Header";
 import Order from "./components/Order";
 import Inventory from "./components/Inventory";
 import Fish from "./components/Fish";
-import sampleFishes from "./sample-fishes"
+
 
 // ----------------Firebase Import----------------------
 import firebase from 'firebase/app';
@@ -56,7 +56,7 @@ function App(props) {
       setLoading(false);
     })
 },[database])
- // add fish to the database---------------------------------------------------------------
+// add fish to the database---------------------------------------------------------------
   function addFish(fish) {
     database.child(`fish-${Date.now()}`).set(fish)
   }
@@ -64,32 +64,35 @@ function App(props) {
   function deleteFish(id){
     database.child(id).remove()
   }
-
-  // saving the order when order is changed------------------------------------
-  useEffect(()=>{
-    function saveOrders(storeId){
-      localStorage.setItem(storeId,JSON.stringify(orders))
-    }
-    saveOrders(storeId)
-  },[orders,storeId]);
-
-  function loadSampleFishes() {
-    setFishes(sampleFishes);
+// edit fish-------------------------------------------------------------------------------
+  function editFish(id,prop,value){
+    database.child(id).child(prop).set(value)
   }
- 
+  
 
+// -----------------------------------------------------------------ORDER----------------------------------------------------------------
+
+  // getting the order from local storage-----------------------------------
+  function getOrder(){
+    const storeId = props.match.params.storeId;
+    const order = JSON.parse(localStorage.getItem(storeId)) || {};
+    return order; 
+  }  
+  // saving the order when order is changed---------------------------------
+  useEffect(()=>{
+      function saveOrders(storeId){
+        localStorage.setItem(storeId,JSON.stringify(orders))
+      }
+      saveOrders(storeId)
+  },[orders,storeId]);
+  // add to order------------------------------------------------------------
   function addToOrder(id){
     const ordersCopy = {...orders};
     ordersCopy[id] = ordersCopy[id]+1 || 1;
     setOrders(ordersCopy);
   }
   
-  // getting the order from local storage-----------------------------------
-  function getOrder(){
-    const storeId = props.match.params.storeId;
-    const order = JSON.parse(localStorage.getItem(storeId)) || {};
-    return order; 
-  }
+  
 
 
 
@@ -110,7 +113,7 @@ function App(props) {
       {/* order----------------- */}
       <Order fishes={fishes} orders={orders} />
       {/* inventory------------- */}
-      <Inventory fishes={fishes} deleteFish={deleteFish} loadSampleFishes={loadSampleFishes} addFish={addFish} />
+      <Inventory fishes={fishes} editFish={editFish} deleteFish={deleteFish}  addFish={addFish} />
     </div>
   );
 }
