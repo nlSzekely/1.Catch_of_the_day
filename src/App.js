@@ -4,7 +4,7 @@ import Header from "./components/Header";
 import Order from "./components/Order";
 import Inventory from "./components/Inventory";
 import Fish from "./components/Fish";
-
+import sampleFishes from "./sample-fishes";
 
 // ----------------Firebase Import----------------------
 import firebase from 'firebase/app';
@@ -98,6 +98,10 @@ function App(props) {
     delete updatedOrders[fishId];
     setOrders(updatedOrders);
   }
+
+  function loadSampleFishes(){
+    database.child("fishes").set(sampleFishes);
+  }
   
   
 
@@ -120,7 +124,7 @@ function App(props) {
       {/* order----------------- */}
       <Order removeOrder={removeOrder} fishes={fishes} orders={orders} />
       {/* inventory------------- */}
-      <Inventory fishes={fishes} editFish={editFish} deleteFish={deleteFish}  addFish={addFish} />
+      <Inventory loadSampleFishes={loadSampleFishes} loading={loading} fishes={fishes} editFish={editFish} deleteFish={deleteFish}  addFish={addFish} />
     </div>
   );
 }
