@@ -8,7 +8,7 @@ export default function Inventory(props) {
         <div>
             <h2>Inventory</h2>
             {Object.keys(props.fishes).map((key)=>{
-                return <EditFishForm key={key} />
+                return <EditFishForm key={key} fish={props.fishes[key]} />
             })}
             <AddFishForm addFish={props.addFish}/>
             <button onClick={props.loadSampleFishes}>Load Sample Fishes</button>

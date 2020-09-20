@@ -10,10 +10,19 @@ import sampleFishes from "./sample-fishes"
 import firebase from 'firebase/app';
 import 'firebase/database';
 
+function Loading(){
+  return(
+    <div style={{textAlign:"center",marginTop:"50px"}}>
+      <h4>Loading.....</h4>
+    </div>
+  )
+}
+
 
 
 function App(props) {
   const storeId = props.match.params.storeId;
+  const [loading,setLoading] = useState(true);
   const [database,setDatabase] = useState();
   const [fishes, setFishes] = useState({});
   const [orders, setOrders] = useState(getOrder());
@@ -44,12 +53,11 @@ useEffect(()=>{
   if(!database){return};
   database.on("value",(item)=>{
     setFishes(item.val()||{});
+    setLoading(false);
   })
 },[database])
 
-
-
-  // saving the order when order is changed
+  // saving the order when order is changed------------------------------------
   useEffect(()=>{
     function saveOrders(storeId){
       localStorage.setItem(storeId,JSON.stringify(orders))
@@ -60,11 +68,9 @@ useEffect(()=>{
   function loadSampleFishes() {
     setFishes(sampleFishes);
   }
-
+  // add fish to the database------------------------------------------
   function addFish(fish) {
-    const fishesCopy = { ...fishes };
-    fishesCopy[`fish-${Date.now()}`] = fish;
-    setFishes(fishesCopy);
+    database.child(`fish-${Date.now()}`).set(fish)
   }
   function addToOrder(id){
     const ordersCopy = {...orders};
@@ -86,11 +92,13 @@ useEffect(()=>{
       <div className="menu">
         <Header tagline="Fresh Seafood Market" />
         {/* list of fishes-------- */}
+        {loading?<Loading/>:
         <ul className="list-of-fishes">
           {Object.keys(fishes).map((key) => {
             return <Fish key={key} addToOrder={addToOrder} fishId={key} fishObj={fishes[key]} />
           })}
-        </ul>
+        </ul>}
+        
       </div>
 
       {/* order----------------- */}
