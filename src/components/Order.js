@@ -13,14 +13,15 @@ export default function Order(props) {
     const renderOrderList = () => {
         return Object.keys(props.orders).map((key, index) => {
             if (props.fishes[key] && props.fishes[key].status === "0") {
-                return <li key={key}>Sorry {props.fishes[key].name} is currently unavailable</li>
+                return <li  key={key}>Sorry {props.fishes[key].name} is currently unavailable <button onClick={()=>{props.removeOrder(key)}}>&times;</button></li>
             }
             if (!props.fishes[key]) {
-                return <li key={index}>No such fish in our database</li>
+                return <li key={index}>No such fish in our database <button onClick={()=>{props.removeOrder(key)}}>&times;</button></li>
             }
-            return <li key={key}>
+            return <li  key={key}>
                 <span>{props.orders[key]}kg{props.fishes[key].name}</span>
                 <span className="price">{formatPrice(props.orders[key] * props.fishes[key].price)}</span>
+                <button onClick={()=>{props.removeOrder(key)}}>&times;</button>
             </li>
         })
     }

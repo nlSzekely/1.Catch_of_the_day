@@ -51,22 +51,22 @@ function App(props) {
 // loading the fishes from the database---------------------------------------------------
   useEffect(()=>{
     if(!database){return};
-    database.on("value",(item)=>{
+    database.child("fishes").on("value",(item)=>{
       setFishes(item.val()||{});
       setLoading(false);
     })
 },[database])
 // add fish to the database---------------------------------------------------------------
   function addFish(fish) {
-    database.child(`fish-${Date.now()}`).set(fish)
+    database.child("fishes").child(`fish-${Date.now()}`).set(fish)
   }
 // delete fish from the database-----------------------------------------------------------
   function deleteFish(id){
-    database.child(id).remove()
+    database.child("fishes").child(id).remove()
   }
 // edit fish-------------------------------------------------------------------------------
   function editFish(id,prop,value){
-    database.child(id).child(prop).set(value)
+    database.child("fishes").child(id).child(prop).set(value)
   }
   
 
@@ -91,6 +91,13 @@ function App(props) {
     ordersCopy[id] = ordersCopy[id]+1 || 1;
     setOrders(ordersCopy);
   }
+  // remove from order-------------------------------------------------------
+  function removeOrder(fishId){
+    console.log(fishId)
+    const updatedOrders = {...orders};
+    delete updatedOrders[fishId];
+    setOrders(updatedOrders);
+  }
   
   
 
@@ -111,7 +118,7 @@ function App(props) {
       </div>
 
       {/* order----------------- */}
-      <Order fishes={fishes} orders={orders} />
+      <Order removeOrder={removeOrder} fishes={fishes} orders={orders} />
       {/* inventory------------- */}
       <Inventory fishes={fishes} editFish={editFish} deleteFish={deleteFish}  addFish={addFish} />
     </div>
