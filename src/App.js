@@ -49,13 +49,21 @@ function App(props) {
     getDatabase();
   },[storeId]);
 // loading the fishes from the database---------------------------------------------------
-useEffect(()=>{
-  if(!database){return};
-  database.on("value",(item)=>{
-    setFishes(item.val()||{});
-    setLoading(false);
-  })
+  useEffect(()=>{
+    if(!database){return};
+    database.on("value",(item)=>{
+      setFishes(item.val()||{});
+      setLoading(false);
+    })
 },[database])
+ // add fish to the database---------------------------------------------------------------
+  function addFish(fish) {
+    database.child(`fish-${Date.now()}`).set(fish)
+  }
+// delete fish from the database-----------------------------------------------------------
+  function deleteFish(id){
+    database.child(id).remove()
+  }
 
   // saving the order when order is changed------------------------------------
   useEffect(()=>{
@@ -68,10 +76,8 @@ useEffect(()=>{
   function loadSampleFishes() {
     setFishes(sampleFishes);
   }
-  // add fish to the database------------------------------------------
-  function addFish(fish) {
-    database.child(`fish-${Date.now()}`).set(fish)
-  }
+ 
+
   function addToOrder(id){
     const ordersCopy = {...orders};
     ordersCopy[id] = ordersCopy[id]+1 || 1;
@@ -104,7 +110,7 @@ useEffect(()=>{
       {/* order----------------- */}
       <Order fishes={fishes} orders={orders} />
       {/* inventory------------- */}
-      <Inventory fishes={fishes} loadSampleFishes={loadSampleFishes} addFish={addFish} />
+      <Inventory fishes={fishes} deleteFish={deleteFish} loadSampleFishes={loadSampleFishes} addFish={addFish} />
     </div>
   );
 }
