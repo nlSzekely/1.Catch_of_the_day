@@ -48,7 +48,7 @@ function App(props) {
     };
     getDatabase();
   },[storeId]);
-// loading the fishes from the database---------------------------------------------------
+// loading the fishes from the database---------------------------------------------------refreshes state when database changes
   useEffect(()=>{
     if(!database){return};
     database.child("fishes").on("value",(item)=>{
@@ -122,7 +122,7 @@ function App(props) {
       </div>
 
       {/* order----------------- */}
-      <Order removeOrder={removeOrder} fishes={fishes} orders={orders} />
+      <Order removeOrder={removeOrder} loading={loading} fishes={fishes} orders={orders} />
       {/* inventory------------- */}
       <Inventory loadSampleFishes={loadSampleFishes} loading={loading} fishes={fishes} editFish={editFish} deleteFish={deleteFish}  addFish={addFish} />
     </div>

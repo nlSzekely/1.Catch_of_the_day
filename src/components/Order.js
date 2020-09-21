@@ -29,8 +29,10 @@ export default function Order(props) {
     return (
         <div className="order-wrap">
             <h2>Your Order</h2>
-            <ul className="order-wrap">
-
+            {props.loading?
+            <p style={{textAlign:"center"}}>Loading...</p>
+            :
+            <div className="order-wrap">
                 <ul className="order">
                     {renderOrderList()}
                     <li className="total">
@@ -38,9 +40,8 @@ export default function Order(props) {
                         {formatPrice(total)}
                     </li>
                 </ul>
-
-            </ul>
-
+            </div>
+            }
         </div>
     )
 }
