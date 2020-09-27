@@ -33,12 +33,17 @@ export default function Inventory(props) {
                         }
                     } else {
                         return (
-                            <p>Not your store</p>
+                            <React.Fragment>
+                                <button style={{ marginBottom: "10px" }} onClick={props.logout}>Log out!</button>
+                                <p>This store is owned by someone else try another </p>
+                            </React.Fragment>
+
                         )
                     }
                 } else {
                     return (
                         <React.Fragment>
+                            <button style={{ marginBottom: "10px" }} onClick={props.logout}>Log out!</button>
                             <p>This store is free to use</p>
                             <button onClick={props.claimStore}>Claim Store</button>
                         </React.Fragment>
@@ -52,8 +57,9 @@ export default function Inventory(props) {
                 return (
                     <nav className="login">
                         <p>Sign in to manage you store's inventory</p>
-                        <button className="github" onClick={() => props.authenticate("github")}>Log in with Github</button>
-                        <button className="facebook" onClick={() => props.authenticate("facebook")}>Log in with Facebook</button>
+                        <button className="github" onClick={() => props.authenticate("github")}>{props.loginLoading ? "Loading" : "Log in with Github"}</button>
+                        <button className="facebook" onClick={() => props.authenticate("facebook")}>{props.loginLoading ? "Loading" : "Log in with Facebook"}</button>
+                        <div>{props.loginError}</div>
                     </nav>
                 );
             }

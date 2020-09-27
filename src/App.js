@@ -30,6 +30,8 @@ function App(props) {
   const [userId, setUserId] = useState(null);
   const [userLoading,setUserLoading] = useState(true);
   const [owner, setOwner] = useState(null);
+  const [loginLoading,setLoginLoading] = useState(false);
+  const [loginError,setLoginError] = useState("");
   // getting the database from firebase -----------------------------------------------
   useEffect(() => {
     function getDatabase() {
@@ -45,7 +47,6 @@ function App(props) {
       };
       // Initialize Firebase
       if (!firebase.apps.length) {
-        console.log("hello")
         firebase.initializeApp(firebaseConfig);
         // ----AuthStateChange listener------------
         // https://firebase.google.com/docs/auth/web/manage-users - gets invoked after  every login and logout
@@ -92,6 +93,7 @@ function App(props) {
   // claim ownership-------------------------------------------------------------------------
   function claimStore(){
     database.child("owner").set(userId);
+    setOwner(userId);
   }
 
 
@@ -118,7 +120,6 @@ function App(props) {
   }
   // remove from order-------------------------------------------------------
   function removeOrder(fishId) {
-    console.log(fishId)
     const updatedOrders = { ...orders };
     delete updatedOrders[fishId];
     setOrders(updatedOrders);
@@ -129,10 +130,15 @@ function App(props) {
   }
   //--------------------------------------------------------------AUTHENTICATE-------------------------------------------------
   function authenticate(method) {
+    setLoginLoading(true);
+    setLoginError("");
     let provider;
     switch (method) {
       case "github":
         provider = new firebase.auth.GithubAuthProvider();
+        break;
+      case "facebook":
+        provider = new firebase.auth.FacebookAuthProvider();
         break;
       default :
         return null;
@@ -142,10 +148,13 @@ function App(props) {
       // var token = result.credential.accessToken;
       // The signed-in user info.
       const user = result.user;
+      setLoading(false);
       setUserId(user.uid);
-      // console.log(user);
+      setLoginLoading(false);
+      console.log(user);
       // ...
     }).catch(function (error) {
+      setLoginLoading(false)
       // Handle Errors here.
       // var errorCode = error.code;
       // var errorMessage = error.message;
@@ -153,7 +162,8 @@ function App(props) {
       // var email = error.email;
       // The firebase.auth.AuthCredential type that was used.
       // var credential = error.credential;
-      // console.log(error);
+      console.log(error);
+      setLoginError(error.message);
       // ...
     });
   }
@@ -194,7 +204,22 @@ function App(props) {
       {/* order----------------- */}
       <Order removeOrder={removeOrder} loading={loading} fishes={fishes} orders={orders} />
       {/* inventory------------- */}
-      <Inventory claimStore={claimStore} owner={props.owner} authenticate={authenticate} logout={logout} loading={loading} userId={userId} loadSampleFishes={loadSampleFishes} userLoading={userLoading} fishes={fishes} editFish={editFish} deleteFish={deleteFish} addFish={addFish} />
+      <Inventory 
+        claimStore={claimStore} 
+        owner={owner} 
+        authenticate={authenticate} 
+        logout={logout} 
+        loading={loading} 
+        userId={userId} 
+        loadSampleFishes={loadSampleFishes} 
+        userLoading={userLoading} fishes={fishes} 
+        editFish={editFish} 
+        deleteFish={deleteFish} 
+        addFish={addFish} 
+        loginLoading={loginLoading}
+        loginError = {loginError}
+        />
+        
     </div>
   );
 }
